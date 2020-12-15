@@ -1,36 +1,31 @@
+import uuid
+
 from django.http import HttpResponse
 from django.template import loader
 
+from places.models import Company
+
 
 def start_page(request):
+    features = []
+    for company in Company.objects.all():
+        feature = {
+            'type': 'Feature',
+            'geometry': {
+                'type': 'Point',
+                'coordinates': [company.longitude, company.latitude]
+            },
+            'properties': {
+                'title': company.title,
+                'placeId': uuid.uuid4(),
+                'detailsUrl': ''
+            }
+        }
+        features.append(feature)
+
     places_geojson = {
       'type': 'FeatureCollection',
-      'features': [
-        {
-          'type': 'Feature',
-          'geometry': {
-            'type': 'Point',
-            'coordinates': [37.62, 55.793676]
-          },
-          'properties': {
-            'title': '«Легенды Москвы',
-            'placeId': 'moscow_legends',
-            'detailsUrl': ''
-          }
-        },
-        {
-          'type': 'Feature',
-          'geometry': {
-            'type': 'Point',
-            'coordinates': [37.64, 55.753676]
-          },
-          'properties': {
-            'title': 'Крыши24.рф',
-            'placeId': 'roofs24',
-            'detailsUrl': ''
-          }
-        }
-      ]
+      'features': features
     }
     template = loader.get_template('index.html')
     context = {'places_geojson': places_geojson}
