@@ -15,7 +15,10 @@ class Company(models.Model):
 class Image(models.Model):
     image = models.ImageField('Картинка')
     company = models.ForeignKey(Company, on_delete=models.CASCADE, verbose_name='Компания', related_name='images')
-    position = models.PositiveIntegerField("Позиция", default=1)
+    position = models.PositiveIntegerField("Позиция", default=0)
+
+    class Meta(object):
+        ordering = ['position']
 
     def __str__(self):
         return f'{self.position} {self.company.title}'
