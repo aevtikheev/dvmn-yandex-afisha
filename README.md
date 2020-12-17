@@ -1,6 +1,8 @@
 # dvmn_yandex_afisha
 Educational project for dvmn.org 
 
+Доступен здесь - http://aevtikheev.pythonanywhere.com/
+
 ## Запуск
 
 Для запуска сайта вам понадобится Python третьей версии.
