@@ -31,6 +31,8 @@ DEBUG = os.getenv('DEBUG', False)
 
 SESSION_COOKIE_SECURE = True
 
+ALLOWED_HOSTS = ['*']
+
 # Application definition
 
 INSTALLED_APPS = [
