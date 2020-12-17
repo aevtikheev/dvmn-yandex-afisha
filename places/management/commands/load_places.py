@@ -1,3 +1,5 @@
+import logging
+
 from urllib.parse import unquote, urlparse
 from pathlib import PurePosixPath
 
@@ -6,6 +8,8 @@ from django.core.management.base import BaseCommand
 from django.core.files.base import ContentFile
 
 from places.models import Company, Image
+
+logging.basicConfig(format='%(levelname)s:%(message)s', level=logging.INFO)
 
 
 class Command(BaseCommand):
@@ -24,6 +28,7 @@ class Command(BaseCommand):
                 longitude=company_data['coordinates']['lng'],
                 latitude=company_data['coordinates']['lat']
             )
+            logging.info(f'Company "{new_company.title}" created')
 
             for image_position, image_url in enumerate(company_data['imgs']):
                 new_image, _ = Image.objects.get_or_create(
@@ -34,3 +39,4 @@ class Command(BaseCommand):
                 image_content = ContentFile(requests.get(image_url).content)
                 image_name = PurePosixPath(unquote(urlparse(image_url).path)).parts[-1]
                 new_image.image.save(image_name, image_content)
+                logging.info(f'Image {image_name} for company "{new_company.title}" uploaded')
