@@ -1,5 +1,4 @@
 import logging
-
 from urllib.parse import unquote, urlparse
 from pathlib import PurePosixPath
 
