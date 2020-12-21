@@ -12,12 +12,12 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='Company',
+            name='Place',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('title', models.CharField(max_length=200, verbose_name='Название')),
-                ('description_short', models.TextField(verbose_name='Краткое описание')),
-                ('description_long', models.TextField(verbose_name='Полное описание')),
+                ('short_description', models.TextField(verbose_name='Краткое описание')),
+                ('long_description', models.TextField(verbose_name='Полное описание')),
                 ('longitude', models.FloatField(verbose_name='Долгота')),
                 ('latitude', models.FloatField(verbose_name='Широта')),
             ],

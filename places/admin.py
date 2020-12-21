@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.utils.html import format_html
 from adminsortable2.admin import SortableInlineAdminMixin
 
-from places.models import Company, Image
+from places.models import Place, Image
 
 
 class ImageInline(SortableInlineAdminMixin, admin.TabularInline):
@@ -13,7 +13,7 @@ class ImageInline(SortableInlineAdminMixin, admin.TabularInline):
         return format_html('<img src="{}" height=200/>', obj.image.url)
 
 
-@admin.register(Company)
+@admin.register(Place)
 class CompanyAdmin(admin.ModelAdmin):
     inlines = [
         ImageInline,

@@ -6,7 +6,7 @@ import requests
 from django.core.management.base import BaseCommand
 from django.core.files.base import ContentFile
 
-from places.models import Company, Image
+from places.models import Place, Image
 
 logging.basicConfig(format='%(levelname)s:%(message)s', level=logging.INFO)
 
@@ -19,23 +19,23 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         for url in options['data_urls']:
-            company_data = requests.get(url).json()
-            new_company, _ = Company.objects.get_or_create(
-                title=company_data['title'],
-                description_short=company_data['description_short'],
-                description_long=company_data['description_long'],
-                longitude=company_data['coordinates']['lng'],
-                latitude=company_data['coordinates']['lat']
+            place_data = requests.get(url).json()
+            new_place, _ = Place.objects.get_or_create(
+                title=place_data['title'],
+                short_description=place_data['description_short'],
+                long_description=place_data['description_long'],
+                longitude=place_data['coordinates']['lng'],
+                latitude=place_data['coordinates']['lat']
             )
-            logging.info(f'Company "{new_company.title}" created')
+            logging.info(f'Place "{new_place.title}" created')
 
-            for image_position, image_url in enumerate(company_data['imgs']):
+            for image_position, image_url in enumerate(place_data['imgs']):
                 new_image, _ = Image.objects.get_or_create(
-                    company=new_company,
+                    place=new_place,
                     position=image_position
                 )
 
                 image_content = ContentFile(requests.get(image_url).content)
                 image_name = PurePosixPath(unquote(urlparse(image_url).path)).parts[-1]
                 new_image.image.save(image_name, image_content)
-                logging.info(f'Image {image_name} for company "{new_company.title}" uploaded')
+                logging.info(f'Image {image_name} for place "{new_place.title}" uploaded')

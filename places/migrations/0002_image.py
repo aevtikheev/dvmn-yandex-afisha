@@ -16,7 +16,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('image', models.ImageField(upload_to='', verbose_name='Картинка')),
-                ('company', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='image', to='places.company', verbose_name='Компания')),
+                ('place', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='image', to='places.place', verbose_name='Место')),
             ],
         ),
     ]

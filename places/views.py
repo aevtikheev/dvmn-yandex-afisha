@@ -4,22 +4,22 @@ from django.http import HttpResponse, JsonResponse
 from django.template import loader
 from django.shortcuts import get_object_or_404
 
-from places.models import Company
+from places.models import Place
 
 
 def start_page(request):
     features = []
-    for company in Company.objects.all():
+    for place in Place.objects.all():
         feature = {
             'type': 'Feature',
             'geometry': {
                 'type': 'Point',
-                'coordinates': [company.longitude, company.latitude]
+                'coordinates': [place.longitude, place.latitude]
             },
             'properties': {
-                'title': company.title,
+                'title': place.title,
                 'placeId': uuid.uuid4(),
-                'detailsUrl': f'/places/{company.id}/'
+                'detailsUrl': f'/places/{place.id}/'
             }
         }
         features.append(feature)
@@ -35,15 +35,15 @@ def start_page(request):
 
 
 def company_details(request, pk):
-    company = get_object_or_404(Company, pk=pk)
+    place = get_object_or_404(Place, pk=pk)
     details = {
-        'title': company.title,
-        'imgs': [image.image.url for image in company.images.order_by('position').all()],
-        'description_short': company.description_short,
-        'description_long': company.description_long,
+        'title': place.title,
+        'imgs': [image.image.url for image in place.images.order_by('position').all()],
+        'description_short': place.short_description,
+        'long_description': place.long_description,
         'coordinates': {
-            'lng': company.longitude,
-            'lat': company.latitude
+            'lng': place.longitude,
+            'lat': place.latitude
         }
     }
     return JsonResponse(details, json_dumps_params={'ensure_ascii': False, 'indent': 4})
