@@ -17,7 +17,9 @@ class ImageInline(SortableInlineAdminMixin, admin.TabularInline):
 
 
 @admin.register(Place)
-class CompanyAdmin(admin.ModelAdmin):
+class PlaceAdmin(admin.ModelAdmin):
+    search_fields = ['title']
+
     inlines = [
         ImageInline,
     ]
@@ -27,6 +29,7 @@ class CompanyAdmin(admin.ModelAdmin):
 class ImageAdmin(admin.ModelAdmin):
 
     readonly_fields = ['preview_image']
+    autocomplete_fields = ['place']
 
     def preview_image(self, obj):
         return (
