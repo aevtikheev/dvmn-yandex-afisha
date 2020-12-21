@@ -20,14 +20,19 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         for url in options['data_urls']:
             place_data = requests.get(url).json()
-            new_place, _ = Place.objects.get_or_create(
+            new_place, created = Place.objects.get_or_create(
                 title=place_data['title'],
-                short_description=place_data['description_short'],
-                long_description=place_data['description_long'],
-                longitude=place_data['coordinates']['lng'],
-                latitude=place_data['coordinates']['lat']
+                defaults={
+                    'short_description': place_data['description_short'],
+                    'long_description': place_data['description_long'],
+                    'longitude': place_data['coordinates']['lng'],
+                    'latitude': place_data['coordinates']['lat']
+                }
             )
-            logging.info(f'Place "{new_place.title}" created')
+            if created:
+                logging.info(f'Place "{new_place.title}" created')
+            else:
+                logging.info(f'Place "{new_place.title}" already exists')
 
             for image_position, image_url in enumerate(place_data['imgs']):
                 new_image, _ = Image.objects.get_or_create(
