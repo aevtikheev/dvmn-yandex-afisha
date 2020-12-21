@@ -3,6 +3,7 @@ from urllib.parse import unquote, urlparse
 from pathlib import PurePosixPath
 
 import requests
+from requests.exceptions import ReadTimeout, ConnectionError, HTTPError
 from django.core.management.base import BaseCommand
 from django.core.files.base import ContentFile
 
@@ -37,17 +38,17 @@ class Command(BaseCommand):
                 logging.info(f'Place "{new_place.title}" already exists')
 
             for image_position, image_url in enumerate(place_data['imgs']):
+                try:
+                    response = requests.get(image_url)
+                    response.raise_for_status()
+                except (ReadTimeout, ConnectionError, HTTPError) as exception:
+                    logging.exception(exception)
+                    continue
+
                 new_image, _ = Image.objects.get_or_create(
                     place=new_place,
                     position=image_position
                 )
-
-                response = requests.get(image_url)
-                try:
-                    response.raise_for_status()
-                except requests.exceptions.HTTPError:
-                    logging.error(f'Image not found for url: {image_url}')
-                    continue
                 image_content = ContentFile(response.content)
                 image_name = PurePosixPath(unquote(urlparse(image_url).path)).parts[-1]
                 new_image.image.save(image_name, image_content)
