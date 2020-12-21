@@ -2,6 +2,7 @@ import uuid
 
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, render
+from django.urls import reverse
 
 from places.models import Place
 
@@ -18,7 +19,7 @@ def start_page(request):
             'properties': {
                 'title': place.title,
                 'placeId': uuid.uuid4(),
-                'detailsUrl': f'/places/{place.id}/'
+                'detailsUrl': reverse('places-place-details', args=(place.id,))
             }
         }
         features.append(feature)
@@ -30,7 +31,7 @@ def start_page(request):
     return render(request, 'index.html', context={'places_geojson': places_geojson})
 
 
-def company_details(request, pk):
+def place_details(request, pk):
     place = get_object_or_404(Place, pk=pk)
     details = {
         'title': place.title,
