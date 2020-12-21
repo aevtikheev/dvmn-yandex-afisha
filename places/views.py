@@ -1,8 +1,7 @@
 import uuid
 
-from django.http import HttpResponse, JsonResponse
-from django.template import loader
-from django.shortcuts import get_object_or_404
+from django.http import JsonResponse
+from django.shortcuts import get_object_or_404, render
 
 from places.models import Place
 
@@ -28,10 +27,7 @@ def start_page(request):
       'type': 'FeatureCollection',
       'features': features
     }
-    template = loader.get_template('index.html')
-    context = {'places_geojson': places_geojson}
-    rendered_page = template.render(context, request)
-    return HttpResponse(rendered_page)
+    return render(request, 'index.html', context={'places_geojson': places_geojson})
 
 
 def company_details(request, pk):
@@ -39,7 +35,7 @@ def company_details(request, pk):
     details = {
         'title': place.title,
         'imgs': [image.image.url for image in place.images.order_by('position').all()],
-        'description_short': place.short_description,
+        'short_description': place.short_description,
         'long_description': place.long_description,
         'coordinates': {
             'lng': place.longitude,
