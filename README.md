@@ -1,5 +1,5 @@
-# dvmn_yandex_afisha
-Educational project for dvmn.org 
+# Афиша
+Интерактивная карта Москвы, на которой отображены интересные места с подробными описаниями и комментариями.
 
 Доступен здесь - http://aevtikheev.pythonanywhere.com/
 
