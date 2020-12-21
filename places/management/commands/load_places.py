@@ -19,7 +19,9 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         for url in options['data_urls']:
-            place_data = requests.get(url).json()
+            response = requests.get(url)
+            response.raise_for_status()
+            place_data = response.json()
             new_place, created = Place.objects.get_or_create(
                 title=place_data['title'],
                 defaults={
@@ -40,7 +42,13 @@ class Command(BaseCommand):
                     position=image_position
                 )
 
-                image_content = ContentFile(requests.get(image_url).content)
+                response = requests.get(image_url)
+                try:
+                    response.raise_for_status()
+                except requests.exceptions.HTTPError:
+                    logging.error(f'Image not found for url: {image_url}')
+                    continue
+                image_content = ContentFile(response.content)
                 image_name = PurePosixPath(unquote(urlparse(image_url).path)).parts[-1]
                 new_image.image.save(image_name, image_content)
                 logging.info(f'Image {image_name} for place "{new_place.title}" uploaded')
