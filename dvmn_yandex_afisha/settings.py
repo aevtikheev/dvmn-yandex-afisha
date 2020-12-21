@@ -13,8 +13,10 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 import os
 from pathlib import Path
 
-from dotenv import load_dotenv
-load_dotenv()
+from environs import Env
+
+env = Env()
+env.read_env()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -24,10 +26,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.getenv('SECRET_KEY', 'default')
+SECRET_KEY = env('SECRET_KEY', 'default')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.getenv('DEBUG', False)
+DEBUG = env.bool('DEBUG', False)
 
 SESSION_COOKIE_SECURE = True
 
@@ -85,7 +87,7 @@ WSGI_APPLICATION = 'dvmn_yandex_afisha.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / os.getenv('DATABASE_NAME', 'db.sqlite3'),
+        'NAME': BASE_DIR / env('DATABASE_NAME', 'db.sqlite3'),
     }
 }
 
