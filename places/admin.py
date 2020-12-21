@@ -10,7 +10,10 @@ class ImageInline(SortableInlineAdminMixin, admin.TabularInline):
     readonly_fields = ['preview_image']
 
     def preview_image(self, obj):
-        return format_html('<img src="{}" height=200/>', obj.image.url)
+        return (
+            format_html('<img src="{}" height=200/>', obj.image.url) if obj.image
+            else 'Здесь будет превью, когда вы выберете файл.'
+        )
 
 
 @admin.register(Place)
@@ -26,4 +29,7 @@ class ImageAdmin(admin.ModelAdmin):
     readonly_fields = ['preview_image']
 
     def preview_image(self, obj):
-        return format_html('<img src="{}" />', obj.image.url)
+        return (
+            format_html('<img src="{}" />', obj.image.url) if obj.image
+            else 'Здесь будет превью, когда вы выберете файл.'
+        )
